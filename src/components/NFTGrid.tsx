@@ -145,29 +145,36 @@ export function NFTGrid() {
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex gap-6 px-4 sm:px-8">
           {nfts.map((nft) => (
-            <div
-              key={nft.id}
-              className="flex-[0_0_95%] sm:flex-[0_0_30%] bg-[#1a0d3a]/70 rounded-2xl p-6 border border-fuchsia-600/30 shadow-lg hover:shadow-[0_0_25px_rgba(236,72,153,0.3)] transition-all flex flex-col items-center text-center"
-            >
-              <div className="w-32 h-32 sm:w-48 sm:h-48 flex items-center justify-center bg-[#0e0524]/80 rounded-xl overflow-hidden mb-4">
-                <img
-                  src={nft.image}
-                  alt={nft.name}
-                  className="object-contain w-full h-full transition-transform duration-300 hover:scale-105"
-                />
-              </div>
-              <h3 className="text-lg sm:text-xl font-semibold text-fuchsia-300 mb-1">
-                {nft.name}
-              </h3>
-              <p className="text-xl mb-2">{nft.flags}</p>
-              <p className="text-sm text-purple-200 mb-4">{nft.description}</p>
-              <button
-                onClick={() => handleClaim(nft)}
-                className="bg-fuchsia-500 text-white px-6 py-2 rounded-full font-medium hover:bg-fuchsia-400 transition"
-              >
-                Claim
-              </button>
+          <div
+            key={nft.id}
+            className="
+              flex-[0_0_90%] sm:flex-[0_0_30%]
+              bg-[#1a0d3a]/70 rounded-2xl p-4 sm:p-6
+              border border-fuchsia-600/30 shadow-lg
+              hover:shadow-[0_0_25px_rgba(236,72,153,0.3)]
+              transition-all flex flex-col items-center text-center
+              mx-auto sm:mx-0
+            "
+          >
+            <div className="w-28 h-28 sm:w-48 sm:h-48 flex items-center justify-center bg-[#0e0524]/80 rounded-xl overflow-hidden mb-4">
+              <img
+                src={nft.image}
+                alt={nft.name}
+                className="object-contain w-full h-full transition-transform duration-300 hover:scale-105"
+              />
             </div>
+            <h3 className="text-base sm:text-xl font-semibold text-fuchsia-300 mb-1">
+              {nft.name}
+            </h3>
+            <p className="text-lg sm:text-xl mb-2">{nft.flags}</p>
+            <p className="text-xs sm:text-sm text-purple-200 mb-4">{nft.description}</p>
+            <button
+              onClick={() => handleClaim(nft)}
+              className="bg-fuchsia-500 text-white px-4 py-2 rounded-full font-medium hover:bg-fuchsia-400 transition text-sm sm:text-base"
+            >
+              Claim
+            </button>
+          </div>
           ))}
         </div>
       </div>
