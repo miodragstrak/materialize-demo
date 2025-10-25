@@ -1,6 +1,6 @@
 'use client'
 
-import { Toaster, toast } from 'react-hot-toast'
+import { Toaster } from 'react-hot-toast'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { NFTGrid } from './components/NFTGrid'
 
@@ -40,25 +40,7 @@ export default function App() {
 
         {/* NFT Claim Section */}
         <section id="claim" className="w-full max-w-6xl">
-          <NFTGrid
-              toast={{
-                success: (msg: string) => toast.success(msg),
-                error: (msg: string) => toast.error(msg),
-                warn: (msg: string) =>
-                  toast.custom(
-                    (t) => (
-                      <div
-                        className={`${
-                          t.visible ? 'animate-enter' : 'animate-leave'
-                        } bg-yellow-400 text-black px-4 py-2 rounded-lg shadow-lg`}
-                      >
-                        ⚠️ {msg}
-                      </div>
-                    ),
-                    { duration: 3000 }
-                  ),
-              }}
-            />
+          <NFTGrid />
         </section>
 
         {/* Footer */}
