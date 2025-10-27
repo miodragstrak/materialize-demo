@@ -1,199 +1,117 @@
-'use client'
-
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useWallet } from '@solana/wallet-adapter-react'
-import useEmblaCarousel from 'embla-carousel-react'
-import Autoplay from 'embla-carousel-autoplay'
-import { useEffect, useCallback, useRef } from 'react'
 import { sendClaimEmail } from '../lib/sendClaimEmail'
-import { toast } from 'react-hot-toast'
+import { ClaimModal } from './ClaimModal'
 
-type NFT = {
-  id: number
-  name: string
-  flags: string
-  description: string
-  image: string
+const nfts = [
+  { id: 1, name: 'Bardoka', image: '/nft1.jpg', flags: '🇷🇸 🇲🇪 🇦🇱',
+    desc: 'A multi-purpose breed found across Serbia, Montenegro, and Albania. Valued for milk, meat, and wool.' },
+  { id: 2, name: 'Pag Sheep', image: '/nft2.jpg', flags: '🇭🇷',
+    desc: 'Famous for the world-known “Paški sir” cheese; a small island breed adapted to harsh coastal winds.' },
+  { id: 3, name: 'Vitoroga', image: '/nft3.jpg', flags: '🇷🇸 🇲🇪 🇧🇦 🇦🇱',
+    desc: 'Hardy mountain sheep known for its spiral horns and dense wool; iconic across the Western Balkans.' },
+]
+
+type ToastType = {
+  success: (msg: string) => void
+  error: (msg: string) => void
+  warn: (msg: string) => void
 }
 
-export function NFTGrid() {
+export function NFTGrid({ toast }: { toast: ToastType }) {
   const { publicKey } = useWallet()
-  const autoplay = useRef(Autoplay({ delay: 3500, stopOnInteraction: false }))
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    { loop: true, align: 'center' },
-    [autoplay.current]
-  )
+  const [index, setIndex] = useState(0)
+  const [showModal, setShowModal] = useState(false)
+  const [claimedNFT, setClaimedNFT] = useState<string | null>(null)
 
-  const nfts: NFT[] = [
-    {
-      id: 1,
-      name: 'Bardoka',
-      flags: '🇷🇸 🇲🇪 🇦🇱',
-      description:
-        'A multi-purpose breed found across Serbia, Montenegro, and Albania. Valued for milk, meat, and wool production.',
-      image: '/nft1.jpg',
-    },
-    {
-      id: 2,
-      name: 'Balusha',
-      flags: '🇦🇱',
-      description:
-        'A unique Albanian breed with snow-white wool; under conservation for its purity and resilience.',
-      image: '/nft2.jpg',
-    },
-    {
-      id: 3,
-      name: 'Dubska Pramenka',
-      flags: '🇧🇦 🇭🇷',
-      description:
-        'Hardy mountain breed known for high milk yield and adaptability; found in Bosnia and northern Croatia.',
-      image: '/nft3.jpg',
-    },
-    {
-      id: 4,
-      name: 'Pivska Pramenka',
-      flags: '🇲🇪 🇧🇦',
-      description:
-        'Local Montenegrin–Bosnian breed raised for quality meat and durable wool; part of national conservation programs.',
-      image: '/nft4.jpg',
-    },
-    {
-      id: 5,
-      name: 'Sharri',
-      flags: '🇲🇰 🇦🇱',
-      description:
-        'Multi-purpose mountain breed from the Šar Mountains, prized for its endurance and rich milk.',
-      image: '/nft5.jpg',
-    },
-    {
-      id: 6,
-      name: 'Karakachan',
-      flags: '🇧🇬 🇷🇸 🇲🇰',
-      description:
-        'One of Europe’s oldest native breeds; symbol of sustainable herding and combined production.',
-      image: '/nft6.jpg',
-    },
-    {
-      id: 7,
-      name: 'Istrian',
-      flags: '🇭🇷',
-      description:
-        'Recognized for premium lamb and cheese; native to Croatia’s Istria region.',
-      image: '/nft7.jpg',
-    },
-    {
-      id: 8,
-      name: 'Pag Sheep',
-      flags: '🇭🇷',
-      description:
-        'Famous for the world-known “Paški sir” cheese; a small island breed adapted to harsh coastal winds.',
-      image: '/nft8.jpg',
-    },
-    {
-      id: 9,
-      name: 'Sjenicka Sheep',
-      flags: '🇷🇸 🇲🇪',
-      description:
-        'A long-tailed strain of the Zeckel group; raised for high-quality milk, meat, and wool in Serbia and Montenegro.',
-      image: '/nft9.jpg',
-    },
-    {
-      id: 10,
-      name: 'Native Colored Wool Breed',
-      flags: '🇧🇬',
-      description:
-        'Bulgaria’s heritage breed with naturally colored wool, valued by local textile artisans.',
-      image: '/nft10.jpg',
-    },
-    {
-      id: 11,
-      name: 'Vitoroga (Horned Sheep)',
-      flags: '🇷🇸 🇲🇪 🇧🇦 🇦🇱',
-      description:
-        'Hardy mountain sheep known for its spiral horns and dense wool; iconic across the Western Balkans.',
-      image: '/nft11.jpg',
-    },
-  ]
+  const nft = nfts[index]
 
-  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi])
-  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi])
-
-  const handleClaim = async (nft: NFT) => {
-    if (!publicKey) return toast.error('⚠️ Connect your wallet first!')
-
-    const wallet = publicKey.toBase58()
-    const success = sendClaimEmail(wallet, nft.name)
-
-    if (await success) {
-      toast.success(`✅ ${nft.name} claimed!`)
-      toast.custom(() => (
-        <div className="text-white bg-fuchsia-600 px-4 py-2 rounded-lg shadow-lg">
-          🎁 Visit our booth to receive your engraved stand!
-        </div>
-      ))
-    } else {
-      toast.error('❌ Something went wrong while saving your claim.')
-    }
+  const handleClaim = async () => {
+    if (!publicKey) return toast.error('⚠️ Connect wallet first!')
+    const walletAddress = publicKey.toBase58()
+    const success = await sendClaimEmail(walletAddress, nft.name)
+    if (success) {
+      setClaimedNFT(nft.name)
+      setShowModal(true)
+      toast.success(`✅ Claimed ${nft.name}`)
+    } else toast.error('❌ Error saving claim')
   }
 
-  useEffect(() => {
-    if (emblaApi) emblaApi.reInit()
-  }, [emblaApi])
-
   return (
-    <div className="relative w-screen max-w-full mx-auto mt-10 overflow-hidden">
-      {/* Carousel container */}
-      <div className="overflow-hidden" ref={emblaRef}>
-        <div className="flex gap-6 px-4 sm:px-8">
-          {nfts.map((nft) => (
-          <div
+    <div className="flex flex-col items-center text-center w-full mt-10 mb-20">
+      <h2 className="text-xl sm:text-2xl font-bold mb-4 text-fuchsia-400">
+        Choose Your Balkan Sheep NFT 🐑
+      </h2>
+
+      <div className="relative w-full max-w-sm sm:max-w-md">
+        <AnimatePresence mode="wait">
+          <motion.div
             key={nft.id}
-            className="
-              flex-[0_0_90%] sm:flex-[0_0_30%]
-              bg-[#1a0d3a]/70 rounded-2xl p-4 sm:p-6
-              border border-fuchsia-600/30 shadow-lg
-              hover:shadow-[0_0_25px_rgba(236,72,153,0.3)]
-              transition-all flex flex-col items-center text-center
-              mx-auto sm:mx-0
-            "
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.4 }}
+            className="rounded-2xl bg-[#15092f] border border-fuchsia-800/30 p-5 shadow-[0_0_20px_rgba(236,72,153,0.25)]"
           >
-            <div className="w-28 h-28 sm:w-48 sm:h-48 flex items-center justify-center bg-[#0e0524]/80 rounded-xl overflow-hidden mb-4">
-              <img
-                src={nft.image}
-                alt={nft.name}
-                className="object-contain w-full h-full transition-transform duration-300 hover:scale-105"
-              />
-            </div>
-            <h3 className="text-base sm:text-xl font-semibold text-fuchsia-300 mb-1">
+            <img
+              src={nft.image}
+              alt={nft.name}
+              className="w-full h-64 sm:h-80 object-contain rounded-xl mb-4"
+            />
+            <h3 className="text-2xl font-semibold text-fuchsia-300 mb-2">
               {nft.name}
             </h3>
-            <p className="text-lg sm:text-xl mb-2">{nft.flags}</p>
-            <p className="text-xs sm:text-sm text-purple-200 mb-4">{nft.description}</p>
-            <button
-              onClick={() => handleClaim(nft)}
-              className="bg-fuchsia-500 text-white px-4 py-2 rounded-full font-medium hover:bg-fuchsia-400 transition text-sm sm:text-base"
-            >
-              Claim
-            </button>
-          </div>
-          ))}
-        </div>
-      </div>
+            <p className="text-lg mb-1">{nft.flags}</p>
+            <p className="text-sm text-purple-200 mb-6 px-2 leading-relaxed">
+              {nft.desc}
+            </p>
 
-      {/* Navigation buttons */}
-      <div className="flex justify-center gap-4 mt-6">
+            <button
+              onClick={handleClaim}
+              className="w-full bg-gradient-to-r from-fuchsia-500 to-purple-600 text-white font-semibold py-3 rounded-full shadow-lg hover:scale-105 hover:shadow-[0_0_15px_rgba(236,72,153,0.4)] transition"
+            >
+              🚀 Claim NFT
+            </button>
+          </motion.div>
+        </AnimatePresence>
+
+        {/* navigation arrows desktop */}
         <button
-          onClick={scrollPrev}
-          className="bg-fuchsia-600/50 hover:bg-fuchsia-600 text-white px-4 py-2 rounded-full"
+          onClick={() => setIndex((index - 1 + nfts.length) % nfts.length)}
+          className="hidden sm:block absolute left-[-60px] top-1/2 -translate-y-1/2 bg-fuchsia-600 hover:bg-fuchsia-500 text-white px-3 py-2 rounded-full text-lg shadow-lg"
         >
           ← Prev
         </button>
         <button
-          onClick={scrollNext}
-          className="bg-fuchsia-600/50 hover:bg-fuchsia-600 text-white px-4 py-2 rounded-full"
+          onClick={() => setIndex((index + 1) % nfts.length)}
+          className="hidden sm:block absolute right-[-60px] top-1/2 -translate-y-1/2 bg-fuchsia-600 hover:bg-fuchsia-500 text-white px-3 py-2 rounded-full text-lg shadow-lg"
         >
           Next →
         </button>
+
+        {/* mobile navigation below image */}
+        <div className="sm:hidden flex justify-between mt-4">
+          <button
+            onClick={() => setIndex((index - 1 + nfts.length) % nfts.length)}
+            className="bg-fuchsia-500 text-white px-4 py-2 rounded-full text-sm font-semibold mx-2 flex-1"
+          >
+            ← Prev
+          </button>
+          <button
+            onClick={() => setIndex((index + 1) % nfts.length)}
+            className="bg-fuchsia-500 text-white px-4 py-2 rounded-full text-sm font-semibold mx-2 flex-1"
+          >
+            Next →
+          </button>
+        </div>
       </div>
+
+      <ClaimModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        nftName={claimedNFT ?? ''}
+      />
     </div>
   )
 }

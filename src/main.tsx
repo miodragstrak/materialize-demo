@@ -1,16 +1,20 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import App from './App'
+import AdminPage from './pages/Admin'
 import { SolanaWalletProvider } from './components/SolanaWalletProvider'
-import { Buffer } from 'buffer'
+import './index.css'
 
-if (!window.Buffer) window.Buffer = Buffer
-
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
     <SolanaWalletProvider>
-      <App />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="/admin" element={<AdminPage />} />
+        </Routes>
+      </BrowserRouter>
     </SolanaWalletProvider>
-  </StrictMode>,
+  </React.StrictMode>
 )
