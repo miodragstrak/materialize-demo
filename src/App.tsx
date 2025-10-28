@@ -30,8 +30,7 @@ export default function App() {
             Reverse RWA for the Real World
           </h2>
           <p className="text-purple-200 max-w-md text-lg mb-8 leading-relaxed">
-            Claim your digital sheep and get the physical engraved stand at our booth.  
-            Physical first — tokenized after. That’s <b>Reverse RWA.</b>
+            Claim your digital sheep and get the physical engraved pendant at our booth.
           </p>
         </section>
 

@@ -51,7 +51,7 @@ export function ClaimModal({ open, onClose, nftName }: Props) {
 
             <p className="text-purple-200 mb-6 leading-relaxed text-sm sm:text-base">
               Visit our <b>DeFab partner — StarIt Center</b>, the nearest
-              <b> Materialize Project</b> booth, and pick up your engraved stand.
+              <b> Materialize Project</b> booth, and pick up your engraved pendant.
               <br />
               Show your wallet address to verify ownership.
             </p>
