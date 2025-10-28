@@ -126,11 +126,6 @@ export function NFTGrid({ toast }: { toast: ToastType }) {
             transition={{ duration: 0.4 }}
             className="rounded-2xl bg-[#15092f] border border-fuchsia-800/30 p-5 shadow-[0_0_20px_rgba(236,72,153,0.25)]"
           >
-            <img
-              src={nft.image}
-              alt={nft.name}
-              className="w-full h-64 sm:h-80 object-contain rounded-xl mb-4"
-            />
             <h3 className="text-2xl font-semibold text-fuchsia-300 mb-2">
               {nft.name}
             </h3>
@@ -139,9 +134,24 @@ export function NFTGrid({ toast }: { toast: ToastType }) {
               {nft.desc}
             </p>
 
+            <img
+              src={nft.image}
+              alt={nft.name}
+              className="w-full h-64 sm:h-80 object-contain rounded-xl mb-4"
+            />
+
             <button
               onClick={handleClaim}
-              className="w-full bg-gradient-to-r from-fuchsia-500 to-purple-600 text-white font-semibold py-3 rounded-full shadow-lg hover:scale-105 hover:shadow-[0_0_15px_rgba(236,72,153,0.4)] transition"
+              className="w-full font-semibold py-3 rounded-full text-lg transition transform hover:scale-105"
+              style={{
+                border: '2px solid #f5b352',
+                color: '#f5b352',
+                padding: '14px 36px',
+                borderRadius: 30,
+                fontWeight: 600,
+                fontSize: 16,
+                boxShadow: '0 0 20px #cf496860',
+              }}
             >
               🚀 Claim NFT
             </button>
@@ -151,28 +161,66 @@ export function NFTGrid({ toast }: { toast: ToastType }) {
         {/* navigation arrows desktop */}
         <button
           onClick={() => setIndex((index - 1 + nfts.length) % nfts.length)}
-          className="hidden sm:block absolute left-[-60px] top-1/2 -translate-y-1/2 bg-fuchsia-600 hover:bg-fuchsia-500 text-white px-3 py-2 rounded-full text-lg shadow-lg"
+          className="hidden sm:block absolute left-[-70px] top-1/2 -translate-y-1/2 transition-transform hover:scale-110"
+          style={{
+            border: '2px solid #f5b352',
+            color: '#f5b352',
+            padding: '10px 22px',
+            borderRadius: 30,
+            fontWeight: 600,
+            fontSize: 16,
+            boxShadow: '0 0 20px #cf496860',
+          }}
         >
           ← Prev
         </button>
         <button
           onClick={() => setIndex((index + 1) % nfts.length)}
-          className="hidden sm:block absolute right-[-60px] top-1/2 -translate-y-1/2 bg-fuchsia-600 hover:bg-fuchsia-500 text-white px-3 py-2 rounded-full text-lg shadow-lg"
+          className="hidden sm:block absolute right-[-70px] top-1/2 -translate-y-1/2 transition-transform hover:scale-110"
+          style={{
+            border: '2px solid #f5b352',
+            color: '#f5b352',
+            padding: '10px 22px',
+            borderRadius: 30,
+            fontWeight: 600,
+            fontSize: 16,
+            boxShadow: '0 0 20px #cf496860',
+          }}
         >
           Next →
         </button>
 
         {/* mobile navigation below image */}
-        <div className="sm:hidden flex justify-between mt-4">
+        <div className="sm:hidden flex justify-between mt-4 w-full">
           <button
             onClick={() => setIndex((index - 1 + nfts.length) % nfts.length)}
-            className="bg-fuchsia-500 text-white px-4 py-2 rounded-full text-sm font-semibold mx-2 flex-1"
+            style={{
+              border: '2px solid #f5b352',
+              color: '#f5b352',
+              padding: '12px 0',
+              borderRadius: 30,
+              fontWeight: 600,
+              flex: 1,
+              margin: '0 8px',
+              fontSize: 16,
+              boxShadow: '0 0 20px #cf496860',
+            }}
           >
             ← Prev
           </button>
           <button
             onClick={() => setIndex((index + 1) % nfts.length)}
-            className="bg-fuchsia-500 text-white px-4 py-2 rounded-full text-sm font-semibold mx-2 flex-1"
+            style={{
+              border: '2px solid #f5b352',
+              color: '#f5b352',
+              padding: '12px 0',
+              borderRadius: 30,
+              fontWeight: 600,
+              flex: 1,
+              margin: '0 8px',
+              fontSize: 16,
+              boxShadow: '0 0 20px #cf496860',
+            }}
           >
             Next →
           </button>
