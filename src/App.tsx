@@ -3,64 +3,50 @@
 import toast, { Toaster } from 'react-hot-toast'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { NFTGrid } from './components/NFTGrid'
+import { SolanaWalletProvider } from './components/SolanaWalletProvider'
 
 export default function App() {
   return (
-    <main className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-[#0e0524] via-[#1a0d3a] to-[#0e0524] text-white overflow-y-auto sm:overflow-hidden sm:h-screen">
-      {/* Outer centering container */}
-      <div className="w-full max-w-3xl mx-auto px-4 flex flex-col justify-center items-center sm:h-[90vh]">
-        {/* Header */}
-        <header className="w-full flex justify-between items-center py-6">
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-400 to-violet-400">
-            Materialize Market
-          </h1>
-          <div className="bg-white/10 px-4 py-2 rounded-xl border border-fuchsia-500/30 backdrop-blur-md">
-            <WalletMultiButton />
-          </div>
-        </header>
+    <SolanaWalletProvider>
+      <main className="min-h-screen bg-gradient-to-br from-brand via-[#1a0d3a] to-brand text-white flex flex-col items-center justify-center px-4">
+        <div className="w-full max-w-5xl">
+          <header className="flex justify-between items-center py-6">
+            <h1 className="text-3xl font-extrabold text-accent drop-shadow-[0_0_10px_rgba(245,179,82,0.5)]">
+              Materialize It!
+            </h1>
+            <div className="bg-white/10 px-4 py-2 rounded-xl border border-accent/40 backdrop-blur-md">
+              <WalletMultiButton />
+            </div>
+          </header>
 
-        {/* Hero Section */}
-        <section className="flex flex-col items-center text-center mt-10 sm:mt-16 mb-10">
-          <img
-            src="/logo2.jpg"
-            alt="Materialize Market Logo"
-            className="w-24 h-24 sm:w-32 sm:h-32 squared-full mb-6 drop-shadow-[0_0_20px_rgba(236,72,153,0.4)]"
-          />
-          <h2 className="text-4xl sm:text-5xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-fuchsia-400">
-            Reverse RWA for the Real World
-          </h2>
-          <p className="text-purple-200 max-w-md text-lg mb-8 leading-relaxed">
-            Claim your digital sheep and get the physical engraved pendant at our booth.
-          </p>
-        </section>
+          <section className="text-center mt-10 mb-12">
+            <img
+              src="/logo2.jpg"
+              alt="Materialize Logo"
+              className="w-42 h-24 sm:w-42 sm:h-24 mx-auto squared-full mb-6 shadow-[0_0_25px_rgba(245,179,82,0.4)]"
+            />
+            <h2 className="text-4xl sm:text-5xl font-bold text-accent mb-4">
+              Reverse RWA for the Real World
+            </h2>
+            <h3 className="text-purple-200 max-w-2xl mx-auto mb-8">
+              Claim your digital sheep and get the engraved pendant at our booth.
+            </h3>
+          </section>
 
-        {/* NFT Claim Section */}
-        <div className="transform scale-95 sm:scale-100 transition-transform duration-300 w-full">
           <NFTGrid
             toast={{
               success: (msg: string) => toast.success(msg),
               error: (msg: string) => toast.error(msg),
-              warn: (msg: string) =>
-                toast((t) => (
-                  <div
-                    className={`${
-                      t.visible ? 'animate-enter' : 'animate-leave'
-                    } bg-yellow-400 text-black px-4 py-2 rounded-lg shadow-lg`}
-                  >
-                    ⚠️ {msg}
-                  </div>
-                )),
+              warn: (msg: string) => toast(msg),
             }}
           />
+
+          <footer className="mt-12 py-6 text-center text-purple-400 text-sm border-t border-accent/30">
+            © {new Date().getFullYear()} Materialize Labs · Built for the Real World ⚡
+          </footer>
         </div>
-
-        {/* Footer */}
-        <footer className="mt-16 py-6 text-center text-purple-400 text-sm border-t border-purple-800/30 w-full">
-          © {new Date().getFullYear()} Materialize Labs · Built for Hackathons ⚡
-        </footer>
-
         <Toaster position="top-center" />
-      </div>
-    </main>
+      </main>
+    </SolanaWalletProvider>
   )
 }
