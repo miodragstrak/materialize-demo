@@ -12,7 +12,7 @@ export default function App() {
         <div className="w-full max-w-5xl">
           <header className="flex justify-between items-center py-6">
             <h1 className="text-3xl font-extrabold text-accent drop-shadow-[0_0_10px_rgba(245,179,82,0.5)]">
-              Materialize It!
+              Materialize it now!
             </h1>
             <div className="bg-white/10 px-4 py-2 rounded-xl border border-accent/40 backdrop-blur-md">
               <WalletMultiButton />
@@ -31,6 +31,9 @@ export default function App() {
             <h3 className="text-purple-200 max-w-2xl mx-auto mb-8">
               Claim your digital sheep and get the engraved pendant at our booth.
             </h3>
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 text-fuchsia-400">
+              Choose Your Balkan Sheep NFT 🐑
+            </h2>
           </section>
 
           <NFTGrid
@@ -42,7 +45,7 @@ export default function App() {
           />
 
           <footer className="mt-12 py-6 text-center text-purple-400 text-sm border-t border-accent/30">
-            © {new Date().getFullYear()} Materialize Labs · Built for the Real World ⚡
+            © {new Date().getFullYear()} Materialize Labs · Built for Solana Buildstation Belgrade 2025 ⚡
           </footer>
         </div>
         <Toaster position="top-center" />

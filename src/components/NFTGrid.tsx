@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { sendClaimEmail } from '../lib/sendClaimEmail'
+import { ClaimModal } from './ClaimModal'
 
 const nfts = [
   { id: 1, name: 'Vitoroga (Horned Sheep)', image: '/nft1.jpg', flags: '🇷🇸 🇲🇪 🇧🇦 🇦🇱',
@@ -84,24 +85,31 @@ const nfts = [
     desc: 'This breed, common in Serbia, Bosnia and Herzegovina, and Montenegro, is a triple-purpose breed valued for its meat, milk, and wool. ' },
 ]
 
-type ToastType = {
-  success: (msg: string) => void
-  error: (msg: string) => void
-  warn: (msg: string) => void
-}
+  type ToastType = {
+    success: (msg: string) => void
+    error: (msg: string) => void
+    warn: (msg: string) => void
+  }
 
-export function NFTGrid({ toast }: { toast: ToastType }) {
-  const { publicKey } = useWallet()
-  const [index, setIndex] = useState(0)
+  export function NFTGrid({ toast }: { toast: ToastType }) {
+    const { publicKey } = useWallet()
+    const [index, setIndex] = useState(0)
+    const [showModal, setShowModal] = useState(false)
+    const [claimedNFT, setClaimedNFT] = useState<string | null>(null)
 
-  const nft = nfts[index]
+    const nft = nfts[index]
 
-  const handleClaim = async () => {
+    const handleClaim = async () => {
     if (!publicKey) return toast.error('⚠️ Connect wallet first!')
     const wallet = publicKey.toBase58()
     const ok = await sendClaimEmail(wallet, nft.name)
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    ok ? toast.success(`Claimed ${nft.name}`) : toast.error('❌ Error sending claim')
+    if (ok) {
+      toast.success(`✅ Claimed ${nft.name}`)
+      setClaimedNFT(nft.name)
+      setShowModal(true)
+    } else {
+      toast.error('❌ Error sending claim')
+    }
   }
 
   return (
@@ -150,6 +158,12 @@ export function NFTGrid({ toast }: { toast: ToastType }) {
           Next →
         </button>
       </div>
+      {/* ✅ Pop-up after claim */}
+      <ClaimModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        nftName={claimedNFT ?? ''}
+      />
     </div>
   )
 }
